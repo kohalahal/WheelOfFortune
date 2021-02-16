@@ -1,12 +1,32 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.Fortune;
+import com.example.demo.exception.FortuneNotFoundException;
+import com.example.demo.service.FortuneService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-public class HomeController<FortuneRepository> {
-    private final FortuneRepository fortuneRepository;
+import java.util.List;
 
-    public HomeController(FortuneRepository fortuneRepository) {
-        this.fortuneRepository = fortuneRepository;
+@RestController
+public class HomeController {
+    private final FortuneService fortuneService;
+
+    @Autowired
+    public HomeController(FortuneService fortuneService) {
+        this.fortuneService = fortuneService;
     }
+
+    @GetMapping("/fortunes")
+    List<Fortune> getAll() throws FortuneNotFoundException {
+        return fortuneService.getAll();
+    }
+
+
+    @GetMapping("/fortune")
+    Fortune randomOne() throws FortuneNotFoundException {
+        return fortuneService.getRandom().orElseThrow(() -> new FortuneNotFoundException());
+    }
+
 }
